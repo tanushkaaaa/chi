@@ -11,6 +11,8 @@ from prescription_processor import process_prescription
 from googletrans import Translator
 import functools
 from prescription_processor import get_transliterated_medicines, get_transliterated_medicines
+from deep_translator import GoogleTranslator
+from googletrans import Translator as GoogleTranslator
 
 
 
@@ -24,6 +26,7 @@ def create_gui(root, current_theme, history, config, audio, translator, prescrip
     global lang_var, theme_var, buttons
 
     transliterated_medicines = get_transliterated_medicines(config["medicines"])
+    translator_instance = GoogleTranslator() 
 
     # Background Image with Fallback
     try:
@@ -264,7 +267,16 @@ def create_gui(root, current_theme, history, config, audio, translator, prescrip
     buttons = []
 
     btn_configs = [
-    ("🎤 Speech to Text", lambda: audio["speech_to_text"](status_label, progress_bar, input_text, translated_text, lang_var.get().split()[-1], history, GoogleTranslator)),
+    ("🎤 Speech to Text", lambda: audio["speech_to_text"](
+        root,
+    status_label, 
+    progress_bar, 
+    input_text, 
+    translated_text, 
+    lang_var.get().split()[-1], 
+    history, 
+    translator_instance
+)),
     ("🌐 Translate", lambda: translator["manual_translate"](input_text, translated_text, lang_var.get().split()[-1], status_label, history, GoogleTranslator)),
     ("💊 Prescription", lambda: prescription_processor["process_prescription"](
         input_text, 

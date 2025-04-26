@@ -8,7 +8,7 @@ import tkinter as tk
 import time
 
 
-def speech_to_text(root,status_label, progress_bar, input_text, translated_text, lang_code, history, GoogleTranslator):
+def speech_to_text(root, status_label, progress_bar, input_text, translated_text, lang_code, history, translator):
     progress_bar["value"] = 0
     recognizer = sr.Recognizer()
     with sr.Microphone() as source:
@@ -20,7 +20,14 @@ def speech_to_text(root,status_label, progress_bar, input_text, translated_text,
             progress_bar["value"] = 50
             original = recognizer.recognize_google(audio, language='auto')
             progress_bar["value"] = 80
+            
+            # Create a translator instance with the appropriate source and target
+            from deep_translator import GoogleTranslator
             translated = GoogleTranslator(source='auto', target=lang_code).translate(original)
+            
+            # Or if translator is already an instance, just use its translate method:
+            # translated = translator.translate(original)
+            
             input_text.delete("1.0", tk.END)
             input_text.insert("1.0", original)
             translated_text.delete("1.0", tk.END)
